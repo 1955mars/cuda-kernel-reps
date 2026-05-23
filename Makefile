@@ -14,7 +14,7 @@ CXXFLAGS   := -std=c++17 -O2 -Wall -Wextra
 NVCC       := nvcc
 NVCC_FLAGS := -std=c++17 -O2
 
-.PHONY: all clean 01_vector_add 02_vector_add_naive
+.PHONY: all clean 01_vector_add 02_vector_add_naive 03_vector_add_block
 
 all: 01_vector_add
 
@@ -35,5 +35,13 @@ all: 01_vector_add
 	$(NVCC) $(NVCC_FLAGS) -o $@ $<
 
 # ---------------------------------------------------------------------------
+# Step 03 — Single-block parallel vector add (<<<1, 256>>>)
+# ---------------------------------------------------------------------------
+03_vector_add_block: 03_vector_add_block/vec_add
+
+03_vector_add_block/vec_add: 03_vector_add_block/add.cu
+	$(NVCC) $(NVCC_FLAGS) -o $@ $<
+
+# ---------------------------------------------------------------------------
 clean:
-	rm -f 01_vector_add/vec_add 02_vector_add_naive/vec_add
+	rm -f 01_vector_add/vec_add 02_vector_add_naive/vec_add 03_vector_add_block/vec_add
