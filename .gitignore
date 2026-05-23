@@ -7,6 +7,7 @@
 
 # Step binaries (no extension on Linux/Mac)
 01_vector_add/vec_add
+02_vector_add_naive/vec_add
 02_*/vec_add
 03_*/vec_add
 04_*/vec_add
