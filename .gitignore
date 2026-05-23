@@ -1,0 +1,40 @@
+# Compiled artifacts
+*.o
+*.obj
+*.a
+*.so
+*.exe
+
+# Step binaries (no extension on Linux/Mac)
+01_vector_add/vec_add
+02_*/vec_add
+03_*/vec_add
+04_*/vec_add
+05_*/reduce
+06_*/matmul
+07_*/matmul
+08_*/bench
+
+# CUDA / Nsight profiler outputs
+*.ncu-rep
+*.nsys-rep
+*.qdrep
+*.cubin
+*.ptx
+*.fatbin
+
+# Editor / IDE
+.vscode/
+.idea/
+.cache/
+*.swp
+*.swo
+
+# Python (for Triton bits later)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# macOS
+.DS_Store
