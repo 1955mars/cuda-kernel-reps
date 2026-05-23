@@ -11,8 +11,10 @@ void add (int n, float* x, float* y) {
 int main() {
     int N = 1<<20; //1milion
 
-    float* x = new float[N];
-    float* y = new float[N];
+    float* x;
+    float* y;
+    cudaMallocManaged(&x, N * sizeof(float));
+    cudaMallocManaged(&y, N * sizeof(float));
 
     //initialize x and y arrays on the host
     for(int i=0; i<N; i++) {
@@ -20,8 +22,12 @@ int main() {
         y[i] = 2.0f;
     }
 
-    //Run kernel on 1M elements on the CPU
-    add(N, x, y);
+    //Run kernel on 1M elements on the GPU
+    //<<<1,1,>>> 1 block of 1 thread
+    add<<<1,1>>>(N, x, y);
+
+    // wait for the GPU to finish before reading y on the host
+    cudaDeviceSynchronize();
 
     //Check for errors
     float maxError = 0.0f;
@@ -31,8 +37,8 @@ int main() {
 
     std::cout << "Max error: " << maxError << "\n";
 
-    delete [] x;
-    delete [] y;
+    cudaFree(x);
+    cudaFree(y);
 
     return 0;
 }
