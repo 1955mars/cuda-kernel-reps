@@ -4,6 +4,8 @@
 *.a
 *.so
 *.exe
+*.lib
+*.exp
 
 # Step binaries (no extension on Linux/Mac)
 01_vector_add/vec_add
