@@ -25,8 +25,8 @@ int main() {
     }
 
     //Run kernel on 1M elements on the GPU
-    //<<<1,1,>>> 1 block of 1 thread
-    add<<<1,1>>>(N, x, y);
+    //<<<1, 256>>> 1 block of 256 threads
+    add<<<1, 256>>>(N, x, y);
 
     // wait for the GPU to finish before reading y on the host
     cudaDeviceSynchronize();

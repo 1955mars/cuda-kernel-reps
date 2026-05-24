@@ -6,13 +6,20 @@
 # `make clean`                 wipes binaries
 #
 # Step 01 is pure C++ (g++/clang++).
-# Step 02 onward require nvcc (Linux + NVIDIA GPU).
+# Step 02 onward require nvcc + SM 6.1 target (GTX 1070 / Pascal).
 
-CXX        := g++
-CXXFLAGS   := -std=c++17 -O2 -Wall -Wextra
+ifeq ($(OS),Windows_NT)
+    EXE        := .exe
+    CXX        := cl
+    CXXFLAGS   := /std:c++17 /O2 /W3 /EHsc
+else
+    EXE        :=
+    CXX        := g++
+    CXXFLAGS   := -std=c++17 -O2 -Wall -Wextra
+endif
 
 NVCC       := nvcc
-NVCC_FLAGS := -std=c++17 -O2
+NVCC_FLAGS := -std=c++17 -O2 -arch=sm_61
 
 .PHONY: all clean 01_vector_add 02_vector_add_naive 03_vector_add_block
 
@@ -21,27 +28,27 @@ all: 01_vector_add
 # ---------------------------------------------------------------------------
 # Step 01 — CPU vector add baseline (pure C++)
 # ---------------------------------------------------------------------------
-01_vector_add: 01_vector_add/vec_add
+01_vector_add: 01_vector_add/vec_add$(EXE)
 
-01_vector_add/vec_add: 01_vector_add/add.cpp
+01_vector_add/vec_add$(EXE): 01_vector_add/add.cpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
 # ---------------------------------------------------------------------------
 # Step 02 — Naive CUDA vector add (<<<1, 1>>>)
 # ---------------------------------------------------------------------------
-02_vector_add_naive: 02_vector_add_naive/vec_add
+02_vector_add_naive: 02_vector_add_naive/vec_add$(EXE)
 
-02_vector_add_naive/vec_add: 02_vector_add_naive/add.cu
+02_vector_add_naive/vec_add$(EXE): 02_vector_add_naive/add.cu
 	$(NVCC) $(NVCC_FLAGS) -o $@ $<
 
 # ---------------------------------------------------------------------------
 # Step 03 — Single-block parallel vector add (<<<1, 256>>>)
 # ---------------------------------------------------------------------------
-03_vector_add_block: 03_vector_add_block/vec_add
+03_vector_add_block: 03_vector_add_block/vec_add$(EXE)
 
-03_vector_add_block/vec_add: 03_vector_add_block/add.cu
+03_vector_add_block/vec_add$(EXE): 03_vector_add_block/add.cu
 	$(NVCC) $(NVCC_FLAGS) -o $@ $<
 
 # ---------------------------------------------------------------------------
 clean:
-	rm -f 01_vector_add/vec_add 02_vector_add_naive/vec_add 03_vector_add_block/vec_add
+	rm -f 01_vector_add/vec_add$(EXE) 02_vector_add_naive/vec_add$(EXE) 03_vector_add_block/vec_add$(EXE)
